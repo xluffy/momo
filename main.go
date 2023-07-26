@@ -40,6 +40,9 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{
 			"message": isContain,
 			"client":  c.ClientIP(),
+			"type":    reflect.TypeOf(c.ClientIP()),
+			"white":   whitelist,
+			"l":       list,
 		})
 	})
 
@@ -48,6 +51,7 @@ func main() {
 
 func IsIPInCIDRs(ip string, cidrs []string) (bool, error) {
 	ranger := cidranger.NewPCTrieRanger()
+
 	for _, cidr := range cidrs {
 		_, ipnet, err := net.ParseCIDR(cidr)
 		if err != nil {
