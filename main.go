@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"reflect"
 	"strings"
 
 	"github.com/yl2chen/cidranger"
@@ -14,6 +15,13 @@ import (
 
 func main() {
 	whitelist := os.Getenv("WHITELIST")
+	log.Println("whitelist:", whitelist)
+	log.Println("whitelist type:", reflect.TypeOf(whitelist))
+	list := strings.Split(strings.TrimSpace(whitelist), ",")
+
+	for _, v := range list {
+		log.Println("whitelist item:", v)
+	}
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
