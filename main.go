@@ -5,23 +5,14 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"reflect"
 	"strings"
 
-	"github.com/yl2chen/cidranger"
-
 	"github.com/gin-gonic/gin"
+	"github.com/yl2chen/cidranger"
 )
 
 func main() {
 	whitelist := os.Getenv("WHITELIST")
-	log.Println("whitelist:", whitelist)
-	log.Println("whitelist type:", reflect.TypeOf(whitelist))
-	list := strings.Split(strings.TrimSpace(whitelist), ",")
-
-	for _, v := range list {
-		log.Println("whitelist item:", v)
-	}
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -34,15 +25,12 @@ func main() {
 	})
 
 	r.GET("/check", func(c *gin.Context) {
-		ip := c.Query("ip")
+		ip := c.ClientIP()
 		isContain, _ := IsIPInCIDRs(ip, strings.Split(strings.TrimSpace(whitelist), ","))
 
 		c.JSON(http.StatusOK, gin.H{
 			"message": isContain,
 			"client":  c.ClientIP(),
-			"type":    reflect.TypeOf(c.ClientIP()),
-			"white":   whitelist,
-			"l":       list,
 		})
 	})
 
